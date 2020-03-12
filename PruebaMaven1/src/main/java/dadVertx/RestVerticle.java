@@ -10,13 +10,17 @@ import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
-import types.Humidity;
-import types.Temperature;
+import types.Dispositivo;
+import types.Humedad;
+import types.Riego;
+import types.Usuario;
 
 public class RestVerticle extends AbstractVerticle{
 	
-	private Map<Integer, Humidity> humedad = new LinkedHashMap<>();
-	private Map<Integer, Temperature> temperatura = new LinkedHashMap<>();
+	private Map<Integer, Humedad> humedad = new LinkedHashMap<>();
+	private Map<Integer, Dispositivo> dispositivo = new LinkedHashMap<>();
+	private Map<Integer, Riego> riego = new LinkedHashMap<>();
+	private Map<Integer, Usuario> usuario = new LinkedHashMap<>();
 	@SuppressWarnings("deprecation")
 	@Override
 	public void start(Future<Void> startFuture) {
@@ -33,29 +37,37 @@ public class RestVerticle extends AbstractVerticle{
 			router.get("/api/humedad").handler(this::getAllH);
 			router.put("/api/humedad").handler(this::addOneH);
 			router.post("/api/humedad/:elementid").handler(this::postOneH);
+			router.delete("/api/humedad").handler(this::deleteOneH);
 			
-			router.route("/api/temperatura*").handler(BodyHandler.create());
-			router.get("/api/temperatura").handler(this::getAllT);
-			router.put("/api/temperatura").handler(this::addOneT);
-			router.post("/api/temperatura/:elementid").handler(this::postOneT);
+			router.route("/api/dispositivo*").handler(BodyHandler.create());
+			router.get("/api/dispositivo").handler(this::getAllD);
+			router.put("/api/dispositivo").handler(this::addOneD);
+			router.post("/api/dispositivo/:elementid").handler(this::postOneD);
+			router.delete("/api/dispositivo").handler(this::deleteOneD);
+			
+			router.route("/api/riego*").handler(BodyHandler.create());
+			router.get("/api/riego").handler(this::getAllR);
+			router.put("/api/riego").handler(this::addOneR);
+			router.post("/api/riego/:elementid").handler(this::postOneR);
+			router.delete("/api/riego").handler(this::deleteOneR);
+			
+			router.route("/api/usuario*").handler(BodyHandler.create());
+			router.get("/api/usuario").handler(this::getAllU);
+			router.put("/api/usuario").handler(this::addOneU);
+			router.post("/api/usuario/:elementid").handler(this::postOneU);
+			router.delete("/api/usuario").handler(this::deleteOneU);
 		});
 		
 	}
 	
+	
 	private void createSomeData() {
-		Humidity hum1 = new Humidity(80.3f, Calendar.getInstance().getTimeInMillis(), "salon", 8);
+		Humedad hum1 = new Humedad(80.3f, Calendar.getInstance().getTimeInMillis());
 		humedad.put(hum1.getId(), hum1);
-		Humidity hum2 = new Humidity(75.1f, Calendar.getInstance().getTimeInMillis(), "cocina", 3);
+		Humedad hum2 = new Humedad(75.1f, Calendar.getInstance().getTimeInMillis());
 		humedad.put(hum2.getId(), hum2);
-		Humidity hum3 = new Humidity(43.9f, Calendar.getInstance().getTimeInMillis(), "dormitorio", 1);
+		Humedad hum3 = new Humedad(43.9f, Calendar.getInstance().getTimeInMillis());
 		humedad.put(hum3.getId(), hum3);
-		
-		Temperature tmp1 = new Temperature(29.3f, Calendar.getInstance().getTimeInMillis(), "salon", 1);
-		temperatura.put(tmp1.getId(), tmp1);
-		Temperature tmp2 = new Temperature(25.7f, Calendar.getInstance().getTimeInMillis(), "cocina", 2);
-		temperatura.put(tmp2.getId(), tmp2);
-		Temperature tmp3 = new Temperature(30.1f, Calendar.getInstance().getTimeInMillis(), "dormitorio", 3);
-		temperatura.put(tmp3.getId(), tmp3);
 	}
 	
 	private void getAllH(RoutingContext routingContext) {
@@ -64,7 +76,7 @@ public class RestVerticle extends AbstractVerticle{
 	}
 	
 	private void addOneH(RoutingContext routingContext) {
-		final Humidity element = Json.decodeValue(routingContext.getBodyAsString(), Humidity.class);
+		final Humedad element = Json.decodeValue(routingContext.getBodyAsString(), Humedad.class);
 		humedad.put(element.getId(), element);
 		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
 				.end(Json.encodePrettily(element));
@@ -72,10 +84,8 @@ public class RestVerticle extends AbstractVerticle{
 	
 	private void postOneH(RoutingContext routingContext) {
 		int id = Integer.parseInt(routingContext.request().getParam("elementid"));
-		Humidity ds = humedad.get(id);
-		final Humidity element = Json.decodeValue(routingContext.getBodyAsString(), Humidity.class);
-		ds.setAccuracy(element.getAccuracy());
-		ds.setLocation(element.getLocation());
+		Humedad ds = humedad.get(id);
+		final Humedad element = Json.decodeValue(routingContext.getBodyAsString(), Humedad.class);
 		ds.setTimestamp(element.getTimestamp());
 		ds.setValue(element.getValue());
 		humedad.put(ds.getId(), ds);
@@ -83,29 +93,103 @@ public class RestVerticle extends AbstractVerticle{
 				.end(Json.encode(element));
 	}
 	
-	private void getAllT(RoutingContext routingContext) {
-		routingContext.response().putHeader("content-type", "application/json; charset=utf-8")
-				.end(Json.encodePrettily(temperatura.values()));
-	}
-	
-	private void addOneT(RoutingContext routingContext) {
-		final Temperature element = Json.decodeValue(routingContext.getBodyAsString(), Temperature.class);
-		temperatura.put(element.getId(), element);
+	private void deleteOneH(RoutingContext routingContext) {
+		final Humedad element = Json.decodeValue(routingContext.getBodyAsString(), Humedad.class);
+		humedad.remove(element.getId());
 		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
 				.end(Json.encodePrettily(element));
 	}
 	
-	private void postOneT(RoutingContext routingContext) {
+	private void getAllD(RoutingContext routingContext) {
+		routingContext.response().putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encodePrettily(humedad.values()));
+	}
+	
+	private void addOneD(RoutingContext routingContext) {
+		final Dispositivo element = Json.decodeValue(routingContext.getBodyAsString(), Dispositivo.class);
+		dispositivo.put(element.getId(), element);
+		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encodePrettily(element));
+	}
+	
+	private void postOneD(RoutingContext routingContext) {
 		int id = Integer.parseInt(routingContext.request().getParam("elementid"));
-		Temperature ds = temperatura.get(id);
-		final Temperature element = Json.decodeValue(routingContext.getBodyAsString(), Temperature.class);
-		ds.setAccuracy(element.getAccuracy());
-		ds.setLocation(element.getLocation());
-		ds.setTimestamp(element.getTimestamp());
+		Dispositivo ds = dispositivo.get(id);
+		final Dispositivo element = Json.decodeValue(routingContext.getBodyAsString(), Dispositivo.class);
+		ds.setPlanta(element.getPlanta());
 		ds.setValue(element.getValue());
-		temperatura.put(ds.getId(), ds);
+		dispositivo.put(ds.getId(), ds);
 		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
 				.end(Json.encode(element));
+	}
+	
+	private void deleteOneD(RoutingContext routingContext) {
+		final Dispositivo element = Json.decodeValue(routingContext.getBodyAsString(), Dispositivo.class);
+		humedad.remove(element.getId());
+		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encodePrettily(element));
+	}
+	
+	private void getAllR(RoutingContext routingContext) {
+		routingContext.response().putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encodePrettily(dispositivo.values()));
+	}
+	
+	private void addOneR(RoutingContext routingContext) {
+		final Riego element = Json.decodeValue(routingContext.getBodyAsString(), Riego.class);
+		riego.put(element.getId(), element);
+		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encodePrettily(element));
+	}
+	
+	private void postOneR(RoutingContext routingContext) {
+		int id = Integer.parseInt(routingContext.request().getParam("elementid"));
+		Riego ds = riego.get(id);
+		final Humedad element = Json.decodeValue(routingContext.getBodyAsString(), Humedad.class);
+		ds.setTimestamp(element.getTimestamp());
+		ds.setValue(element.getValue());
+		riego.put(ds.getId(), ds);
+		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encode(element));
+	}
+	
+	private void deleteOneR(RoutingContext routingContext) {
+		final Riego element = Json.decodeValue(routingContext.getBodyAsString(), Riego.class);
+		riego.remove(element.getId());
+		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encodePrettily(element));
+	}
+	
+	private void getAllU(RoutingContext routingContext) {
+		routingContext.response().putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encodePrettily(humedad.values()));
+	}
+	
+	private void addOneU(RoutingContext routingContext) {
+		final Usuario element = Json.decodeValue(routingContext.getBodyAsString(), Usuario.class);
+		usuario.put(element.getId(), element);
+		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encodePrettily(element));
+	}
+	
+	private void postOneU(RoutingContext routingContext) {
+		int id = Integer.parseInt(routingContext.request().getParam("elementid"));
+		Usuario ds = usuario.get(id);
+		final Usuario element = Json.decodeValue(routingContext.getBodyAsString(), Usuario.class);
+		ds.setNombre(element.getNombre());
+		ds.setApellidos(element.getApellidos());
+		ds.setDni(element.getDni());
+		ds.setTelefono(element.getTelefono());
+		usuario.put(ds.getId(), ds);
+		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encode(element));
+	}
+	
+	private void deleteOneU(RoutingContext routingContext) {
+		final Usuario element = Json.decodeValue(routingContext.getBodyAsString(), Usuario.class);
+		usuario.remove(element.getId());
+		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
+				.end(Json.encodePrettily(element));
 	}
 	
 	@Override
