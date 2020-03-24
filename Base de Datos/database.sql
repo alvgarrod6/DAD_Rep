@@ -30,7 +30,7 @@ CREATE TABLE `dispositivo` (
   PRIMARY KEY (`iddispositivo`),
   KEY `dispositivo_key_usuario_idx` (`idUsuario`),
   CONSTRAINT `dispositivo_key_usuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuario` (`idusuario`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +39,7 @@ CREATE TABLE `dispositivo` (
 
 LOCK TABLES `dispositivo` WRITE;
 /*!40000 ALTER TABLE `dispositivo` DISABLE KEYS */;
+INSERT INTO `dispositivo` VALUES (1,'Rosa',3,30),(2,'Tulipan',4,20),(3,'tomates',3,50);
 /*!40000 ALTER TABLE `dispositivo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +60,7 @@ CREATE TABLE `humedad` (
   PRIMARY KEY (`idHumedad`),
   KEY `dispositivoFK_idx` (`idDispositivo`),
   CONSTRAINT `humedad_dispositivo` FOREIGN KEY (`idDispositivo`) REFERENCES `dispositivo` (`iddispositivo`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,6 +69,7 @@ CREATE TABLE `humedad` (
 
 LOCK TABLES `humedad` WRITE;
 /*!40000 ALTER TABLE `humedad` DISABLE KEYS */;
+INSERT INTO `humedad` VALUES (1,15,1234578909,1,10,'sala'),(2,15.2,1234578909,1,12,'sala'),(3,16,1234578909,1,10,'sala'),(4,20,1234578909,2,50,'cocina'),(5,22.3,1234578909,3,59,'patio');
 /*!40000 ALTER TABLE `humedad` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,7 +93,7 @@ CREATE TABLE `riego` (
   CONSTRAINT `riego_dispositivo` FOREIGN KEY (`iddispositivo`) REFERENCES `dispositivo` (`iddispositivo`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `riego_humedad` FOREIGN KEY (`idhumedad`) REFERENCES `humedad` (`idHumedad`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `riego_usuario` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,6 +102,7 @@ CREATE TABLE `riego` (
 
 LOCK TABLES `riego` WRITE;
 /*!40000 ALTER TABLE `riego` DISABLE KEYS */;
+INSERT INTO `riego` VALUES (1,4,1,4,1234578909);
 /*!40000 ALTER TABLE `riego` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,7 +119,7 @@ CREATE TABLE `usuario` (
   `email` varchar(45) NOT NULL,
   `contraseña` int(11) NOT NULL,
   PRIMARY KEY (`idusuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,6 +128,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
+INSERT INTO `usuario` VALUES (3,'marcos','marcos@us.es',180897),(4,'Alvaro','alvaro@us.es',123456),(5,'luismi','luismi@us.es',123456);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -137,4 +141,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-03-18 22:42:37
+-- Dump completed on 2020-03-24 19:17:10
