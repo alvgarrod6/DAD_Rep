@@ -1,42 +1,32 @@
 package types;
 
-import java.util.Calendar;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Riego {
-	private static final AtomicInteger COUNTER = 
-			new AtomicInteger();
 	
 	private int id;
-	private float value;
 	private long timestamp;
+	private int humedad;
+	private boolean manualAuto;
+	private int idsensor;
 	
-	@JsonCreator	
-	public Riego(
-			@JsonProperty("value") float value, 
-			@JsonProperty("timestamp") long timestamp) {
+	public Riego(int id, long timestamp, int humedad, boolean manualAuto, int idsensor) {
 		super();
-		this.id = COUNTER.getAndIncrement();
-		this.value = value;
+		this.id = id;
 		this.timestamp = timestamp;
+		this.humedad = humedad;
+		this.manualAuto = manualAuto;
+		this.idsensor = idsensor;
 	}
-	
+
 	public Riego() {
 		super();
-		this.id = COUNTER.getAndIncrement();
-		this.value = 0;
-		this.timestamp = Calendar.getInstance().getTimeInMillis();
 	}
 
-	public float getValue() {
-		return value;
+	public int getId() {
+		return id;
 	}
 
-	public void setValue(float value) {
-		this.value = value;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public long getTimestamp() {
@@ -47,17 +37,39 @@ public class Riego {
 		this.timestamp = timestamp;
 	}
 
-	public int getId() {
-		return id;
+	public int getHumedad() {
+		return humedad;
+	}
+
+	public void setHumedad(int humedad) {
+		this.humedad = humedad;
+	}
+
+	public boolean isManualAuto() {
+		return manualAuto;
+	}
+
+	public void setManualAuto(boolean manualAuto) {
+		this.manualAuto = manualAuto;
+	}
+
+	public int getIdsensor() {
+		return idsensor;
+	}
+
+	public void setIdsensor(int idsensor) {
+		this.idsensor = idsensor;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + humedad;
 		result = prime * result + id;
+		result = prime * result + idsensor;
+		result = prime * result + (manualAuto ? 1231 : 1237);
 		result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
-		result = prime * result + Float.floatToIntBits(value);
 		return result;
 	}
 
@@ -70,14 +82,20 @@ public class Riego {
 		if (getClass() != obj.getClass())
 			return false;
 		Riego other = (Riego) obj;
+		if (humedad != other.humedad)
+			return false;
 		if (id != other.id)
+			return false;
+		if (idsensor != other.idsensor)
+			return false;
+		if (manualAuto != other.manualAuto)
 			return false;
 		if (timestamp != other.timestamp)
 			return false;
-		if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value))
-			return false;
 		return true;
 	}
+	
+	
 	
 	
 }
