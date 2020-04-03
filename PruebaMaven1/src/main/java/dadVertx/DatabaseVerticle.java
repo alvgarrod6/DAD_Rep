@@ -44,18 +44,23 @@ public class DatabaseVerticle extends AbstractVerticle{
 		router.get("/api/user/:user/:pass").handler(this::getLogin);
 		router.get("/api/user/:idusuario").handler(this::getUsuario);
 		router.delete("/api/user/:idusuario").handler(this::deleteUsuario);
-		router.get("/api/device/:idusuario").handler(this::getDispositivo);
 		router.put("/api/user/:idusuario").handler(this::updateUsuario);
+		
+		router.get("/api/device/:idusuario").handler(this::getDispositivo);		
 		router.post("/api/device").handler(this::putDevice);
 		router.delete("/api/device/:iddispositivo").handler(this::deleteDevice);
+		
 		router.post("/api/sensor").handler(this::putSensor);
 		router.get("/api/sensor/:idsensor").handler(this::getSensor);
 		router.put("/api/sensor/:idsensor").handler(this::updateSensor);
 		router.delete("/api/sensor/:idsensor").handler(this::deleteSensor);
+		
 		router.get("/api/sensor/values/:idSensor").handler(this::getValueBySensor);
+		router.post("/api/sensor/values").handler(this::putValueForSensor);
+		
 		router.get("/api/sensor/riego/:idsensor").handler(this::getRiego);
 		router.post("/api/sensor/riego").handler(this::putRiego);		
-		router.post("/api/sensor/values").handler(this::putValueForSensor);
+		
 	} 
 	
 	private void deleteDevice(RoutingContext routingContext) {
