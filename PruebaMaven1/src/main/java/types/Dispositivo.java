@@ -1,62 +1,65 @@
 package types;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Dispositivo {
-	private static final AtomicInteger COUNTER = 
-			new AtomicInteger();
 	
-	private int id;
-	private float value;
-	private String planta;
+	private int idDispositivo;
+	private String ip;
+	private int idUsuario;
+	private long initialTimestamp;
 	
-	@JsonCreator	
-	public Dispositivo(
-			@JsonProperty("value") float value, 
-			@JsonProperty("planta") String planta) {
+	public Dispositivo(int idDispositivo, String ip, int idUsuario,
+			long initialTimestamp) {
 		super();
-		this.id = COUNTER.getAndIncrement();
-		this.value = value;
-		this.planta = planta;
+		this.idDispositivo = idDispositivo;
+		this.ip = ip;
+		this.idUsuario = idUsuario;
+		this.initialTimestamp = initialTimestamp;
 	}
-	
+
 	public Dispositivo() {
 		super();
-		this.id = COUNTER.getAndIncrement();
-		this.value = 0;
-		this.planta = "";
 	}
 
-	public float getValue() {
-		return value;
+	public int getIdDispositivo() {
+		return idDispositivo;
 	}
 
-	public void setValue(float value) {
-		this.value = value;
+	public void setIdDispositivo(int idDispositivo) {
+		this.idDispositivo = idDispositivo;
 	}
 
-	public String getPlanta() {
-		return planta;
+	public String getIp() {
+		return ip;
 	}
 
-	public void setPlanta(String planta) {
-		this.planta = planta;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
-	public int getId() {
-		return id;
+	public int getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+
+	public long getInitialTimestamp() {
+		return initialTimestamp;
+	}
+
+	public void setInitialTimestamp(long initialTimestamp) {
+		this.initialTimestamp = initialTimestamp;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
-		result = prime * result + ((planta == null) ? 0 : planta.hashCode());
-		result = prime * result + Float.floatToIntBits(value);
+		result = prime * result + idDispositivo;
+		result = prime * result + idUsuario;
+		result = prime * result + (int) (initialTimestamp ^ (initialTimestamp >>> 32));
+		result = prime * result + ((ip == null) ? 0 : ip.hashCode());
 		return result;
 	}
 
@@ -69,17 +72,24 @@ public class Dispositivo {
 		if (getClass() != obj.getClass())
 			return false;
 		Dispositivo other = (Dispositivo) obj;
-		if (id != other.id)
+		if (idDispositivo != other.idDispositivo)
 			return false;
-		if (planta == null) {
-			if (other.planta != null)
+		if (idUsuario != other.idUsuario)
+			return false;
+		if (initialTimestamp != other.initialTimestamp)
+			return false;
+		if (ip == null) {
+			if (other.ip != null)
 				return false;
-		} else if (!planta.equals(other.planta))
-			return false;
-		if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value))
+		} else if (!ip.equals(other.ip))
 			return false;
 		return true;
 	}
+	
+	
+	
+
+	
 	
 	
 }
