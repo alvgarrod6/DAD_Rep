@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
 --
--- Host: localhost    Database: riegoauto
+-- Host: 127.0.0.1    Database: riegoauto
 -- ------------------------------------------------------
 -- Server version	8.0.19
 
@@ -24,9 +24,6 @@ DROP TABLE IF EXISTS `dispositivo`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dispositivo` (
   `iddispositivo` int NOT NULL,
-  `descripcion` longtext NOT NULL,
-  `umbralHumedad` int NOT NULL,
-  `potencia` int NOT NULL,
   `ip` varchar(45) DEFAULT NULL,
   `idusuario` int NOT NULL,
   `initialTimestamp` bigint NOT NULL,
@@ -42,7 +39,7 @@ CREATE TABLE `dispositivo` (
 
 LOCK TABLES `dispositivo` WRITE;
 /*!40000 ALTER TABLE `dispositivo` DISABLE KEYS */;
-INSERT INTO `dispositivo` VALUES (82664,'tulipan',700,43,'192.168.0.0',1,5442132132),(82665,'girasol',500,32,'192.168.0.1',2,56432132132);
+INSERT INTO `dispositivo` VALUES (82664,'192.168.0.0',1,5442132132),(82665,'192.168.0.1',2,56432132132);
 /*!40000 ALTER TABLE `dispositivo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,6 +82,9 @@ DROP TABLE IF EXISTS `sensor`;
 CREATE TABLE `sensor` (
   `idsensor` int NOT NULL AUTO_INCREMENT,
   `iddisp` int NOT NULL,
+  `planta` varchar(45) NOT NULL,
+  `umbral` int NOT NULL,
+  `potencia` int NOT NULL,
   PRIMARY KEY (`idsensor`),
   KEY `sensor_dispositivo_idx` (`iddisp`),
   CONSTRAINT `sensor_dispositivo` FOREIGN KEY (`iddisp`) REFERENCES `dispositivo` (`iddispositivo`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -97,7 +97,7 @@ CREATE TABLE `sensor` (
 
 LOCK TABLES `sensor` WRITE;
 /*!40000 ALTER TABLE `sensor` DISABLE KEYS */;
-INSERT INTO `sensor` VALUES (1,82664),(2,82665);
+INSERT INTO `sensor` VALUES (1,82664,'Tulipan',500,45),(2,82665,'Girasol',700,23);
 /*!40000 ALTER TABLE `sensor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,7 +117,7 @@ CREATE TABLE `sensor_value` (
   PRIMARY KEY (`idsensor_value`),
   KEY `sensor_value_sensor_idx` (`idsensor`),
   CONSTRAINT `sensor_value_sensor` FOREIGN KEY (`idsensor`) REFERENCES `sensor` (`idsensor`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,7 +126,7 @@ CREATE TABLE `sensor_value` (
 
 LOCK TABLES `sensor_value` WRITE;
 /*!40000 ALTER TABLE `sensor_value` DISABLE KEYS */;
-INSERT INTO `sensor_value` VALUES (4,1,700,1,16515151),(5,1,720,3,1321651),(6,2,530,1,1132121),(7,1,750,2,13546);
+INSERT INTO `sensor_value` VALUES (4,1,700,1,16515151),(5,1,720,3,1321651),(6,2,530,1,1132121),(7,1,750,2,13546),(8,1,350,1,15165),(10,1,820,2,5412312);
 /*!40000 ALTER TABLE `sensor_value` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,4 +168,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-01 14:44:32
+-- Dump completed on 2020-04-03 12:05:27
