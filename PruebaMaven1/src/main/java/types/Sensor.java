@@ -1,51 +1,74 @@
 package types;
 
-import java.util.Calendar;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class Humedad {
-	private static final AtomicInteger COUNTER = 
-			new AtomicInteger();
+public class Sensor {
 	
 	private int id;
-	private float value;
-	private long timestamp;
+	private int iddispositivo;
+	private String planta;
+	private int umbral;
+	private int potencia;
+	private long initialTimestamp;
 	
-	@JsonCreator	
-	public Humedad(
-			@JsonProperty("value") float value, 
-			@JsonProperty("timestamp") long timestamp) {
+	public Sensor(int id, int iddispositivo, String planta, int umbral, int potencia, long initialTimestamp) {
 		super();
-		this.id = COUNTER.getAndIncrement();
-		this.value = value;
-		this.timestamp = timestamp;
+		this.id = id;
+		this.iddispositivo = iddispositivo;
+		this.planta = planta;
+		this.umbral = umbral;
+		this.potencia = potencia;
+		this.initialTimestamp = initialTimestamp;
 	}
-	
-	public Humedad() {
+
+	public Sensor() {
 		super();
-		this.id = COUNTER.getAndIncrement();
-		this.value = 0;
-		this.timestamp = Calendar.getInstance().getTimeInMillis();
 	}
-	
+
 	public int getId() {
 		return id;
 	}
-	
-	public float getValue() {
-		return value;
+
+	public void setId(int id) {
+		this.id = id;
 	}
-	public void setValue(float value) {
-		this.value = value;
+
+	public int getIddispositivo() {
+		return iddispositivo;
 	}
-	public long getTimestamp() {
-		return timestamp;
+
+	public void setIddispositivo(int iddispositivo) {
+		this.iddispositivo = iddispositivo;
 	}
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
+
+	public String getPlanta() {
+		return planta;
+	}
+
+	public void setPlanta(String planta) {
+		this.planta = planta;
+	}
+
+	public int getUmbral() {
+		return umbral;
+	}
+
+	public void setUmbral(int umbral) {
+		this.umbral = umbral;
+	}
+
+	public int getPotencia() {
+		return potencia;
+	}
+
+	public void setPotencia(int potencia) {
+		this.potencia = potencia;
+	}
+
+	public long getInitialTimestamp() {
+		return initialTimestamp;
+	}
+
+	public void setInitialTimestamp(long initialTimestamp) {
+		this.initialTimestamp = initialTimestamp;
 	}
 
 	@Override
@@ -53,8 +76,11 @@ public class Humedad {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + id;
-		result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
-		result = prime * result + Float.floatToIntBits(value);
+		result = prime * result + iddispositivo;
+		result = prime * result + (int) (initialTimestamp ^ (initialTimestamp >>> 32));
+		result = prime * result + ((planta == null) ? 0 : planta.hashCode());
+		result = prime * result + potencia;
+		result = prime * result + umbral;
 		return result;
 	}
 
@@ -66,16 +92,24 @@ public class Humedad {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Humedad other = (Humedad) obj;
+		Sensor other = (Sensor) obj;
 		if (id != other.id)
 			return false;
-		if (timestamp != other.timestamp)
+		if (iddispositivo != other.iddispositivo)
 			return false;
-		if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value))
+		if (initialTimestamp != other.initialTimestamp)
+			return false;
+		if (planta == null) {
+			if (other.planta != null)
+				return false;
+		} else if (!planta.equals(other.planta))
+			return false;
+		if (potencia != other.potencia)
+			return false;
+		if (umbral != other.umbral)
 			return false;
 		return true;
 	}
-	
 	
 	
 	
