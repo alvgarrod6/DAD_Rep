@@ -85,6 +85,7 @@ CREATE TABLE `sensor` (
   `planta` varchar(45) NOT NULL,
   `umbral` int NOT NULL,
   `potencia` int NOT NULL,
+  `initialTimestamp` bigint NOT NULL,
   PRIMARY KEY (`idsensor`),
   KEY `sensor_dispositivo_idx` (`iddisp`),
   CONSTRAINT `sensor_dispositivo` FOREIGN KEY (`iddisp`) REFERENCES `dispositivo` (`iddispositivo`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -97,7 +98,7 @@ CREATE TABLE `sensor` (
 
 LOCK TABLES `sensor` WRITE;
 /*!40000 ALTER TABLE `sensor` DISABLE KEYS */;
-INSERT INTO `sensor` VALUES (1,82664,'Tulipan',500,45),(2,82665,'Girasol',700,23);
+INSERT INTO `sensor` VALUES (1,82664,'Tulipan',500,45,0),(2,82665,'Girasol',700,23,0);
 /*!40000 ALTER TABLE `sensor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,4 +169,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-03 12:05:27
+-- Dump completed on 2020-04-03 12:38:20
