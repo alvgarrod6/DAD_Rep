@@ -63,6 +63,134 @@ public class DatabaseVerticle extends AbstractVerticle{
 		
 	} 
 	
+	private void getRiego(RoutingContext routingContext) {
+		mySQLPool.preparedQuery("SELECT * FROM riegoauto.riego WHERE idsensor = ?", 
+				Tuple.of(routingContext.request().getParam("idsensor")), 
+				res -> {
+					if(res.succeeded()) {
+						RowSet<Row> resultSet = res.result();
+						System.out.println("El número de elementos obtenidos es: "+resultSet.size());
+						JsonArray result = new JsonArray();
+						for(Row row : resultSet) {
+							result.add(JsonObject.mapFrom(new Riego(row.getInteger("idriego"),
+									row.getLong("timestamp"),
+									row.getInteger("humedadRiego"),
+									row.getBoolean("autoManual"),
+									row.getInteger("idsensor"))));
+						}
+						
+						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+						.end(result.encodePrettily());
+						}else {
+						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
+						.end((JsonObject.mapFrom(res.cause()).encodePrettily()));
+					}
+				});
+	}
+	
+	private void putRiego(RoutingContext routingContext) {
+		Riego riego = Json.decodeValue(routingContext.getBodyAsString(), Riego.class);
+		mySQLPool.preparedQuery("INSERT INTO riegoauto.riego(idriego"
+				+ ", timestamp, humedadRiego, autoManual, idsensor) "
+				+ "VALUES (?,?,?,?,?)", Tuple.of(riego.getId(), 
+						 riego.getTimestamp(), riego.getHumedad(), riego.isManualAuto(), riego.getIdsensor())
+				, handler ->{
+							if(handler.succeeded()) {
+								System.out.println(handler.result().rowCount());							
+								
+								routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+								.end(JsonObject.mapFrom(riego).encodePrettily());
+							}else {
+								System.out.println(handler.cause().toString());
+								routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
+								.end((JsonObject.mapFrom(handler.cause()).encodePrettily()));
+							}
+				});
+	}
+	
+	private void deleteSensor(RoutingContext routingContext) {
+		mySQLPool.preparedQuery("DELETE FROM riegoauto.sensor WHERE idsensor = ?", 
+				Tuple.of(routingContext.request().getParam("idsensor")), 
+				handler -> {
+					if(handler.succeeded()) {
+						System.out.println(handler.result().rowCount());							
+						
+						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+						.end();
+					}else {
+						System.out.println(handler.cause().toString());
+						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
+						.end((JsonObject.mapFrom(handler.cause()).encodePrettily()));
+					}
+				});
+	}
+	
+	private void updateSensor(RoutingContext routingContext) {
+		Sensor sensor = Json.decodeValue(routingContext.getBodyAsString(), Sensor.class);
+		mySQLPool.preparedQuery("UPDATE riegoauto.sensor SET planta = ?, umbral = ?, potencia = ?"
+				+ " WHERE idsensor = ?", 
+				Tuple.of(sensor.getPlanta(),sensor.getUmbral(), sensor.getPotencia(),
+						 routingContext.request().getParam("idsensor")), 
+				handler -> {
+					if(handler.succeeded()) {
+						System.out.println(handler.result().rowCount());							
+						
+						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+						.end(JsonObject.mapFrom(sensor).encodePrettily());
+					}else {
+						System.out.println(handler.cause().toString());
+						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
+						.end((JsonObject.mapFrom(handler.cause()).encodePrettily()));
+					}
+				});
+	}
+	
+	private void getSensor(RoutingContext routingContext) {
+		mySQLPool.preparedQuery("SELECT * FROM riegoauto.sensor WHERE idsensor = ?", 
+				Tuple.of(routingContext.request().getParam("idsensor")), 
+				res -> {
+					if(res.succeeded()) {
+						RowSet<Row> resultSet = res.result();
+						System.out.println("El número de elementos obtenidos es: "+resultSet.size());
+						JsonArray result = new JsonArray();
+						for(Row row : resultSet) {
+							result.add(JsonObject.mapFrom(new Sensor(row.getInteger("idsensor"),
+									row.getInteger("iddisp"),
+									row.getString("planta"),
+									row.getInteger("umbral"),
+									row.getInteger("potencia"),
+									row.getLong("initialTimestamp"))));
+						}
+						
+						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+						.end(result.encodePrettily());
+						}else {
+						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
+						.end((JsonObject.mapFrom(res.cause()).encodePrettily()));
+					}
+				});
+	}
+	
+	private void putSensor(RoutingContext routingContext) {
+		Sensor sensor = Json.decodeValue(routingContext.getBodyAsString(), Sensor.class);
+		mySQLPool.preparedQuery("INSERT INTO riegoauto.sensor(idsensor"
+				+ ", iddisp, planta, umbral, potencia, initialTimestamp) "
+				+ "VALUES (?,?,?,?,?,?)", Tuple.of(sensor.getId(), 
+						 sensor.getIddispositivo(), sensor.getPlanta(), sensor.getUmbral(), sensor.getPotencia(), sensor.getInitialTimestamp())
+				, handler ->{
+							if(handler.succeeded()) {
+								System.out.println(handler.result().rowCount());							
+								
+								routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+								.end(JsonObject.mapFrom(sensor).encodePrettily());
+							}else {
+								System.out.println(handler.cause().toString());
+								routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
+								.end((JsonObject.mapFrom(handler.cause()).encodePrettily()));
+							}
+				});
+	}
+	
 	private void deleteDevice(RoutingContext routingContext) {
 		mySQLPool.preparedQuery("DELETE FROM riegoauto.dispositivo WHERE iddispositivo = ?", 
 				Tuple.of(routingContext.request().getParam("iddispositivo")), 
