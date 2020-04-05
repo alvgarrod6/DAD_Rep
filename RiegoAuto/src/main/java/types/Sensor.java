@@ -110,6 +110,12 @@ public class Sensor {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Sensor [id=" + id + ", iddispositivo=" + iddispositivo + ", planta=" + planta + ", umbral=" + umbral
+				+ ", potencia=" + potencia + ", initialTimestamp=" + initialTimestamp + "]";
+	}
 	
 	
 	

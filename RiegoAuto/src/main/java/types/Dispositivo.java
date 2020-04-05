@@ -85,6 +85,12 @@ public class Dispositivo {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Dispositivo [idDispositivo=" + idDispositivo + ", ip=" + ip + ", idUsuario=" + idUsuario
+				+ ", initialTimestamp=" + initialTimestamp + "]";
+	}
 	
 	
 	

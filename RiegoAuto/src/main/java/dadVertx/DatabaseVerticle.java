@@ -40,26 +40,26 @@ public class DatabaseVerticle extends AbstractVerticle{
 			}
 		});
 		
-		router.post("/api/user").handler(this::putUsuario);
-		router.get("/api/user/:user/:pass").handler(this::getLogin);
-		router.get("/api/user/:idusuario").handler(this::getUsuario);
-		router.delete("/api/user/:idusuario").handler(this::deleteUsuario);
-		router.put("/api/user/:idusuario").handler(this::updateUsuario);
+		router.post("/api/user").handler(this::putUsuario); //OK
+		router.get("/api/user/:user/:pass").handler(this::getLogin); //OK
+		router.get("/api/user/:idusuario").handler(this::getUsuario);  //OK
+		router.delete("/api/user/:idusuario").handler(this::deleteUsuario); //OK
+		router.put("/api/user/:idusuario").handler(this::updateUsuario);   //OK
 		
-		router.get("/api/device/:idusuario").handler(this::getDispositivo);		
-		router.post("/api/device").handler(this::putDevice);
-		router.delete("/api/device/:iddispositivo").handler(this::deleteDevice);
+		router.get("/api/user/device/:idusuario").handler(this::getDispositivo);	 //ERROR no muestra nada	
+		router.post("/api/user/device").handler(this::putDevice);   				//ERROR 500
+		router.delete("/api/user/device/:iddispositivo").handler(this::deleteDevice); //OK
 		
-		router.post("/api/sensor").handler(this::putSensor);
-		router.get("/api/sensor/:idsensor").handler(this::getSensor);
-		router.put("/api/sensor/:idsensor").handler(this::updateSensor);
-		router.delete("/api/sensor/:idsensor").handler(this::deleteSensor);
+		router.post("/api/user/device/sensor").handler(this::putSensor);  //OK
+		router.get("/api/user/device/sensor/:idsensor").handler(this::getSensor);  //OK
+		router.put("/api/user/device/sensor/:idsensor").handler(this::updateSensor);  //OK
+		router.delete("/api/user/device/sensor/:idsensor").handler(this::deleteSensor);  //OK
 		
-		router.get("/api/sensor/values/:idSensor").handler(this::getValueBySensor);
-		router.post("/api/sensor/values").handler(this::putValueForSensor);
+		router.get("/api/user/device/sensor/values/:idSensor").handler(this::getValueBySensor);  //OK
+		router.post("/api/user/device/sensor/values").handler(this::putValueForSensor);   //OK
 		
-		router.get("/api/sensor/riego/:idsensor").handler(this::getRiego);
-		router.post("/api/sensor/riego").handler(this::putRiego);		
+		router.get("/api/user/device/sensor/riego/:idsensor").handler(this::getRiego); //OK
+		router.post("/api/user/device/sensor/riego").handler(this::putRiego);		   //OK
 		
 	} 
 	
@@ -229,8 +229,8 @@ public class DatabaseVerticle extends AbstractVerticle{
 		Usuario user = Json.decodeValue(routingContext.getBodyAsString(), Usuario.class);
 		mySQLPool.preparedQuery("UPDATE riegoauto.usuario SET user = ?, pass = ?, name = ?, surname = ?, dni = ?"
 				+ ", birthdate = ? WHERE idusuario = ?", 
-				Tuple.of(user.getUser(),user.getPass(), user.getNombre(), user.getApellidos(), user.getDni(),
-						user.getNacimiento(), routingContext.request().getParam("idusuario")), 
+				Tuple.of(user.getUser(),user.getPass(), user.getName(), user.getSurname(), user.getDni(),
+						user.getBirthdate(), routingContext.request().getParam("idusuario")), 
 				handler -> {
 					if(handler.succeeded()) {
 						System.out.println(handler.result().rowCount());							
@@ -247,8 +247,8 @@ public class DatabaseVerticle extends AbstractVerticle{
 	
 	private void putDevice(RoutingContext routingContext) {
 		Dispositivo device = Json.decodeValue(routingContext.getBodyAsString(), Dispositivo.class);
-		mySQLPool.preparedQuery("INSERT INTO riegoauto.dispositivo(iddispositivo"
-				+ ", ip, idusuario, initialTimestamp) "
+		
+		mySQLPool.preparedQuery("INSERT INTO riegoauto.dispositivo(iddispositivo, ip, idusuario, initialTimestamp) "
 				+ "VALUES (?,?,?,?)", Tuple.of(device.getIdDispositivo(), 
 						 device.getIp(), device.getIdUsuario(), device.getInitialTimestamp())
 				, handler ->{
@@ -268,8 +268,8 @@ public class DatabaseVerticle extends AbstractVerticle{
 	private void putUsuario(RoutingContext routingContext) {
 		Usuario user = Json.decodeValue(routingContext.getBodyAsString(), Usuario.class);
 		mySQLPool.preparedQuery("INSERT INTO riegoauto.usuario(user, pass, name, surname, dni, birthdate) "
-				+ "VALUES (?,?,?,?,?,?)", Tuple.of(user.getUser(), user.getPass(), user.getNombre(), user.getApellidos(), 
-						user.getDni(), user.getNacimiento()), handler ->{
+				+ "VALUES (?,?,?,?,?,?)", Tuple.of(user.getUser(), user.getPass(), user.getName(), user.getSurname(), 
+						user.getDni(), user.getBirthdate()), handler ->{
 							if(handler.succeeded()) {
 								System.out.println(handler.result().rowCount());
 								
@@ -315,8 +315,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 	}
 
 	private void getUsuario(RoutingContext routingContext) {
-		mySQLPool.preparedQuery("SELECT * FROM riegoauto.usuario WHERE idusuario = ?", 
-				Tuple.of(routingContext.request().getParam("user")), 
+		mySQLPool.query("SELECT * FROM riegoauto.usuario WHERE idusuario = "+routingContext.request().getParam("idusuario"), 
 				res -> {
 					if(res.succeeded()) {
 						RowSet<Row> resultSet = res.result();
@@ -352,8 +351,8 @@ public class DatabaseVerticle extends AbstractVerticle{
 						for(Row row : resultSet) {
 							result.add(JsonObject.mapFrom(new Dispositivo(row.getInteger("iddispositivo"),
 									row.getString("ip"),
-									row.getInteger("idUsuario"),
-									row.getLong("initialTimestamp"))));
+									row.getInteger("idusuario"),
+									row.getLong("initialtimestamp"))));
 						}
 						
 						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
@@ -368,6 +367,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 	private void getValueBySensor(RoutingContext routingContext) {
 		mySQLPool.query("SELECT * FROM riegoauto.sensor_value WHERE idsensor ="
 	+routingContext.request().getParam("idsensor"), res ->{
+		
 		if(res.succeeded()) {
 			RowSet<Row> resultSet = res.result();
 			System.out.println("El número de elementos obtenidos es: "+resultSet.size());

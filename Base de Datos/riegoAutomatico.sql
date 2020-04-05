@@ -39,7 +39,7 @@ CREATE TABLE `dispositivo` (
 
 LOCK TABLES `dispositivo` WRITE;
 /*!40000 ALTER TABLE `dispositivo` DISABLE KEYS */;
-INSERT INTO `dispositivo` VALUES (82664,'192.168.0.0',1,5442132132),(82665,'192.168.0.1',2,56432132132);
+INSERT INTO `dispositivo` VALUES (82664,'192.168.0.0',1,5442132132);
 /*!40000 ALTER TABLE `dispositivo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +59,7 @@ CREATE TABLE `riego` (
   PRIMARY KEY (`idriego`),
   KEY `riego_sensor_idx` (`idsensor`),
   CONSTRAINT `riego_sensor` FOREIGN KEY (`idsensor`) REFERENCES `sensor` (`idsensor`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `riego` (
 
 LOCK TABLES `riego` WRITE;
 /*!40000 ALTER TABLE `riego` DISABLE KEYS */;
-INSERT INTO `riego` VALUES (1,132156456,720,1,2),(2,531321321,700,0,1);
+INSERT INTO `riego` VALUES (2,531321321,700,0,1),(3,626546548,720,1,1);
 /*!40000 ALTER TABLE `riego` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -89,7 +89,7 @@ CREATE TABLE `sensor` (
   PRIMARY KEY (`idsensor`),
   KEY `sensor_dispositivo_idx` (`iddisp`),
   CONSTRAINT `sensor_dispositivo` FOREIGN KEY (`iddisp`) REFERENCES `dispositivo` (`iddispositivo`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,7 +98,7 @@ CREATE TABLE `sensor` (
 
 LOCK TABLES `sensor` WRITE;
 /*!40000 ALTER TABLE `sensor` DISABLE KEYS */;
-INSERT INTO `sensor` VALUES (1,82664,'Tulipan',500,45,0),(2,82665,'Girasol',700,23,0);
+INSERT INTO `sensor` VALUES (1,82664,'Tulipan',500,45,0);
 /*!40000 ALTER TABLE `sensor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,7 +118,7 @@ CREATE TABLE `sensor_value` (
   PRIMARY KEY (`idsensor_value`),
   KEY `sensor_value_sensor_idx` (`idsensor`),
   CONSTRAINT `sensor_value_sensor` FOREIGN KEY (`idsensor`) REFERENCES `sensor` (`idsensor`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `sensor_value` (
 
 LOCK TABLES `sensor_value` WRITE;
 /*!40000 ALTER TABLE `sensor_value` DISABLE KEYS */;
-INSERT INTO `sensor_value` VALUES (4,1,700,1,16515151),(5,1,720,3,1321651),(6,2,530,1,1132121),(7,1,750,2,13546),(8,1,350,1,15165),(10,1,820,2,5412312);
+INSERT INTO `sensor_value` VALUES (4,1,700,1,16515151),(5,1,720,3,1321651),(7,1,750,2,13546),(8,1,350,1,15165),(10,1,820,2,5412312);
 /*!40000 ALTER TABLE `sensor_value` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -145,9 +145,9 @@ CREATE TABLE `usuario` (
   `name` varchar(45) NOT NULL,
   `surname` varchar(45) DEFAULT NULL,
   `dni` varchar(45) DEFAULT NULL,
-  ` birthdate` bigint DEFAULT NULL,
+  `birthdate` bigint DEFAULT NULL,
   PRIMARY KEY (`idusuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,4 +169,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-03 12:38:20
+-- Dump completed on 2020-04-05 18:55:08

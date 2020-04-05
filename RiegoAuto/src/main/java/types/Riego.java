@@ -94,6 +94,12 @@ public class Riego {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Riego [id=" + id + ", timestamp=" + timestamp + ", humedad=" + humedad + ", manualAuto=" + manualAuto
+				+ ", idsensor=" + idsensor + "]";
+	}
 	
 	
 	
