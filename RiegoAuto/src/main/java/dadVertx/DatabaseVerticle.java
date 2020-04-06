@@ -26,11 +26,11 @@ public class DatabaseVerticle extends AbstractVerticle{
 		MySQLConnectOptions mySQLConnectOptions = new MySQLConnectOptions().setPort(3306).setHost("localhost")
 				.setDatabase("riegoauto").setUser("root").setPassword("root");
 		
-		PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
+		PoolOptions poolOptions = new PoolOptions().setMaxSize(10);
 		mySQLPool = MySQLPool.pool(vertx, mySQLConnectOptions, poolOptions);
 		
 		Router router = Router.router(vertx);
-		router.route().handler(BodyHandler.create());
+		router.route("/api/*").handler(BodyHandler.create());
 		
 		vertx.createHttpServer().requestHandler(router::handle).listen(8080, result -> {
 			if(result.succeeded()) {
@@ -40,28 +40,47 @@ public class DatabaseVerticle extends AbstractVerticle{
 			}
 		});
 		
-		router.post("/api/user").handler(this::putUsuario); //OK
-		router.get("/api/user/:user/:pass").handler(this::getLogin); //OK
-		router.get("/api/user/:idusuario").handler(this::getUsuario);  //OK
-		router.delete("/api/user/:idusuario").handler(this::deleteUsuario); //OK
-		router.put("/api/user/:idusuario").handler(this::updateUsuario);   //OK
+		router.post("/api/user").handler(this::putUsuario); 
+		router.get("/api/user/:user/:pass").handler(this::getLogin); 
+		router.get("/api/user/:idusuario").handler(this::getUsuario); 
+		router.delete("/api/user/:idusuario").handler(this::deleteUsuario); 
+		router.put("/api/user/:idusuario").handler(this::updateUsuario); 
 		
-		router.get("/api/user/device/:idusuario").handler(this::getDispositivo);	 //ERROR no muestra nada	
-		router.post("/api/user/device").handler(this::putDevice);   				//ERROR 500
-		router.delete("/api/user/device/:iddispositivo").handler(this::deleteDevice); //OK
+		router.post("/api/device").handler(this::putDevice); 
+		router.get("/api/device/:idusuario").handler(this::getDispositivo);
+		router.delete("/api/device/:iddispositivo").handler(this::deleteDevice); 
 		
-		router.post("/api/user/device/sensor").handler(this::putSensor);  //OK
-		router.get("/api/user/device/sensor/:idsensor").handler(this::getSensor);  //OK
-		router.put("/api/user/device/sensor/:idsensor").handler(this::updateSensor);  //OK
-		router.delete("/api/user/device/sensor/:idsensor").handler(this::deleteSensor);  //OK
+		router.post("/api/device/sensor").handler(this::putSensor); 
+		router.get("/api/device/sensor/:idsensor").handler(this::getSensor);  
+		router.put("/api/device/sensor/:idsensor").handler(this::updateSensor);  
+		router.delete("/api/device/sensor/:idsensor").handler(this::deleteSensor); 
 		
-		router.get("/api/user/device/sensor/values/:idSensor").handler(this::getValueBySensor);  //OK
-		router.post("/api/user/device/sensor/values").handler(this::putValueForSensor);   //OK
+		router.get("/api/device/sensor/values/:idSensor").handler(this::getValueBySensor); 
+		router.post("/api/device/sensor/values").handler(this::putValueForSensor);  
 		
-		router.get("/api/user/device/sensor/riego/:idsensor").handler(this::getRiego); //OK
-		router.post("/api/user/device/sensor/riego").handler(this::putRiego);		   //OK
+		router.get("/api/device/sensor/riego/:idsensor").handler(this::getRiego);
+		router.post("/api/device/sensor/riego").handler(this::putRiego);	
 		
 	} 
+	
+	private void putDevice(RoutingContext routingContext) {
+		Dispositivo device = Json.decodeValue(routingContext.getBodyAsString(), Dispositivo.class);		
+		mySQLPool.preparedQuery("INSERT INTO riegoauto.dispositivo(iddispositivo, ip, idusuario, initialTimestamp) "
+				+ "VALUES (?,?,?,?)", Tuple.of(device.getIdDispositivo(), 
+						 device.getIp(), device.getIdUsuario(), device.getInitialTimestamp())
+				, handler ->{
+							if(handler.succeeded()) {
+								System.out.println(handler.result().rowCount());							
+								
+								routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+								.end(JsonObject.mapFrom(device).encodePrettily());
+							}else {
+								System.out.println(handler.cause().toString());
+								routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
+								.end((JsonObject.mapFrom(handler.cause()).encodePrettily()));
+							}
+				});
+	}
 	
 	private void getRiego(RoutingContext routingContext) {
 		mySQLPool.preparedQuery("SELECT * FROM riegoauto.riego WHERE idsensor = ?", 
@@ -245,26 +264,6 @@ public class DatabaseVerticle extends AbstractVerticle{
 				});
 	}
 	
-	private void putDevice(RoutingContext routingContext) {
-		Dispositivo device = Json.decodeValue(routingContext.getBodyAsString(), Dispositivo.class);
-		
-		mySQLPool.preparedQuery("INSERT INTO riegoauto.dispositivo(iddispositivo, ip, idusuario, initialTimestamp) "
-				+ "VALUES (?,?,?,?)", Tuple.of(device.getIdDispositivo(), 
-						 device.getIp(), device.getIdUsuario(), device.getInitialTimestamp())
-				, handler ->{
-							if(handler.succeeded()) {
-								System.out.println(handler.result().rowCount());							
-								
-								routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-								.end(JsonObject.mapFrom(device).encodePrettily());
-							}else {
-								System.out.println(handler.cause().toString());
-								routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
-								.end((JsonObject.mapFrom(handler.cause()).encodePrettily()));
-							}
-				});
-	}
-	
 	private void putUsuario(RoutingContext routingContext) {
 		Usuario user = Json.decodeValue(routingContext.getBodyAsString(), Usuario.class);
 		mySQLPool.preparedQuery("INSERT INTO riegoauto.usuario(user, pass, name, surname, dni, birthdate) "
@@ -340,7 +339,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 				});
 	}
 	
-	private void getDispositivo(RoutingContext routingContext) {
+	private void getDispositivo(RoutingContext routingContext) {		
 		mySQLPool.preparedQuery("SELECT * FROM riegoauto.dispositivo WHERE idusuario = ?", 
 				Tuple.of(routingContext.request().getParam("idusuario")), 
 				res -> {
@@ -352,7 +351,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 							result.add(JsonObject.mapFrom(new Dispositivo(row.getInteger("iddispositivo"),
 									row.getString("ip"),
 									row.getInteger("idusuario"),
-									row.getLong("initialtimestamp"))));
+									row.getLong("initialTimestamp"))));
 						}
 						
 						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
