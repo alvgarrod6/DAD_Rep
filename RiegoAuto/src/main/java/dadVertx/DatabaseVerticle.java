@@ -51,7 +51,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 		router.delete("/api/device/:iddispositivo").handler(this::deleteDevice); 
 		
 		router.post("/api/device/sensor").handler(this::putSensor); 
-		router.get("/api/device/sensor/:idsensor").handler(this::getSensor);  
+		router.get("/api/device/sensor/:iddisp").handler(this::getSensor);  
 		router.put("/api/device/sensor/:idsensor").handler(this::updateSensor);  
 		router.delete("/api/device/sensor/:idsensor").handler(this::deleteSensor); 
 		
@@ -165,8 +165,8 @@ public class DatabaseVerticle extends AbstractVerticle{
 	}
 	
 	private void getSensor(RoutingContext routingContext) {
-		mySQLPool.preparedQuery("SELECT * FROM riegoauto.sensor WHERE idsensor = ?", 
-				Tuple.of(routingContext.request().getParam("idsensor")), 
+		mySQLPool.preparedQuery("SELECT * FROM riegoauto.sensor WHERE iddisp = ?", 
+				Tuple.of(routingContext.request().getParam("iddisp")), 
 				res -> {
 					if(res.succeeded()) {
 						RowSet<Row> resultSet = res.result();
