@@ -135,7 +135,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 						System.out.println(handler.result().rowCount());							
 						
 						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end();
+						.end("Sensor dado de baja correctamente");
 					}else {
 						System.out.println(handler.cause().toString());
 						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
@@ -155,7 +155,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 						System.out.println(handler.result().rowCount());							
 						
 						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(JsonObject.mapFrom(sensor).encodePrettily());
+						.end("Datos del sensor actualizados correctamente");
 					}else {
 						System.out.println(handler.cause().toString());
 						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
@@ -218,7 +218,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 						System.out.println(handler.result().rowCount());							
 						
 						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end();
+						.end("Dispositivo dado de baja correctamente");
 					}else {
 						System.out.println(handler.cause().toString());
 						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
@@ -235,7 +235,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 						System.out.println(handler.result().rowCount());							
 						
 						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end();
+						.end("Se ha dado de baja correctamente");
 					}else {
 						System.out.println(handler.cause().toString());
 						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
@@ -255,7 +255,7 @@ public class DatabaseVerticle extends AbstractVerticle{
 						System.out.println(handler.result().rowCount());							
 						
 						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(JsonObject.mapFrom(user).encodePrettily());
+						.end("Datos actualizados correctamente");
 					}else {
 						System.out.println(handler.cause().toString());
 						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
