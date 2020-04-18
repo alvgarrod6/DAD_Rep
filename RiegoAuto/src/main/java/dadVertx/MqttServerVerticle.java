@@ -18,9 +18,9 @@ import io.vertx.mqtt.messages.MqttPublishMessage;
 
 public class MqttServerVerticle extends AbstractVerticle {
 
-	public static final String TOPIC_LIGHTS = "lights";
+	public static final String TOPIC_RIEGO = "riego";
 	public static final String TOPIC_INFO = "info";
-	public static final String TOPIC_SENSOR= "domo";
+	public static final String TOPIC_SENSOR= "sensor";
 	
 	public static final SetMultimap<String, MqttEndpoint> clients = LinkedHashMultimap.create();
 	
@@ -90,8 +90,8 @@ public class MqttServerVerticle extends AbstractVerticle {
 		if (message.qosLevel() == MqttQoS.AT_LEAST_ONCE) {
 			String topicName = message.topicName();
 			switch (topicName) {
-			case TOPIC_LIGHTS:
-				System.out.println("Luces published");
+			case TOPIC_RIEGO:
+				System.out.println("Riego publicado");
 				break;
 			case TOPIC_INFO:
 				System.out.println("Info published");

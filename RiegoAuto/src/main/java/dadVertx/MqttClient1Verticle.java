@@ -46,20 +46,20 @@ public class MqttClient1Verticle extends AbstractVerticle {
 
 		mqttClient.connect(1885, "localhost", handler -> {
 			if (handler.result().code() == MqttConnectReturnCode.CONNECTION_ACCEPTED) {
-				mqttClient.subscribe(MqttServerVerticle.TOPIC_LIGHTS, MqttQoS.AT_LEAST_ONCE.value(),
+				mqttClient.subscribe(MqttServerVerticle.TOPIC_RIEGO, MqttQoS.AT_LEAST_ONCE.value(),
 						handlerSubscribe -> {
 							if (handlerSubscribe.succeeded()) {
-								System.out.println(classInstanceId + " subscribed to " + MqttServerVerticle.TOPIC_LIGHTS
+								System.out.println(classInstanceId + " subscribed to " + MqttServerVerticle.TOPIC_RIEGO
 										+ " channel");
 
 								vertx.setPeriodic((5 + randomTimeSeconds.nextInt(5)) * 1000, handlerPeriodic -> {
-									mqttClient.publish(MqttServerVerticle.TOPIC_LIGHTS,
+									mqttClient.publish(MqttServerVerticle.TOPIC_RIEGO,
 											Buffer.buffer(classInstanceId + " says LIGHTS.ON"), MqttQoS.AT_LEAST_ONCE,
 											false, true);
 								});
 							} else {
 								System.out.println(
-										classInstanceId + " NOT subscribed to " + MqttServerVerticle.TOPIC_LIGHTS
+										classInstanceId + " NOT subscribed to " + MqttServerVerticle.TOPIC_RIEGO
 												+ " channel " + handlerSubscribe.cause().toString());
 							}
 						});
