@@ -8,9 +8,7 @@ public class DespliegueRest extends AbstractVerticle{
 	@Override
 	public void start(Promise<Void> startPromise) {	
 		
-		vertx.deployVerticle(DatabaseVerticle.class.getName());	
-		vertx.deployVerticle(MqttServerVerticle.class.getName());
-		vertx.deployVerticle(MqttClient1Verticle.class.getName());
+		vertx.deployVerticle(DatabaseVerticle.class.getName());
 	}
 	
 }

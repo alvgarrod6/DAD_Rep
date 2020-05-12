@@ -51,7 +51,8 @@ public class DatabaseVerticle extends AbstractVerticle{
 		router.delete("/api/device/:iddispositivo").handler(this::deleteDevice); 
 		
 		router.post("/api/device/sensor").handler(this::putSensor); 
-		router.get("/api/device/sensor/:iddisp").handler(this::getSensor);  
+		router.get("/api/device/sensor/:iddisp").handler(this::getSensor);
+		router.get("/api/device/sensor/id/:idsensor").handler(this::getSensorId);  
 		router.put("/api/device/sensor/:idsensor").handler(this::updateSensor);  
 		router.delete("/api/device/sensor/:idsensor").handler(this::deleteSensor); 
 		
@@ -188,6 +189,32 @@ public class DatabaseVerticle extends AbstractVerticle{
 						.end((JsonObject.mapFrom(res.cause()).encodePrettily()));
 					}
 				});
+	}
+	
+	private void getSensorId(RoutingContext routingContext) {
+		mySQLPool.preparedQuery("SELECT * FROM riegoauto.sensor WHERE idsensor = ?", 
+				Tuple.of(routingContext.request().getParam("idsensor")), 
+				res -> {
+					if(res.succeeded()) {
+						RowSet<Row> resultSet = res.result();
+						System.out.println("El número de elementos obtenidos es: "+resultSet.size());
+						JsonArray result = new JsonArray();
+						for(Row row : resultSet) {
+							result.add(JsonObject.mapFrom(new Sensor(row.getInteger("idsensor"),
+									row.getInteger("iddisp"),
+									row.getString("planta"),
+									row.getInteger("umbral"),
+									row.getInteger("potencia"),
+									row.getLong("initialTimestamp"))));
+						}
+						
+						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+						.end(result.encodePrettily());
+						}else {
+						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
+						.end((JsonObject.mapFrom(res.cause()).encodePrettily()));
+					}
+				});		
 	}
 	
 	private void putSensor(RoutingContext routingContext) {
