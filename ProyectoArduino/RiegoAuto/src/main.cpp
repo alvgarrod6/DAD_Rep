@@ -7,8 +7,11 @@
 char responseBuffer[300];
 WiFiClient client;
 
-String SSID = "Dunar"; //nombre de la red a la que el ESP se conectara
-String PASS = "d7?a35D9EnaPepXY?c!4"; //contraseña de acceso
+//String SSID = "Dunar"; //nombre de la red a la que el ESP se conectara
+//String PASS = "d7?a35D9EnaPepXY?c!4"; //contraseña de acceso
+
+String SSID = "Artemisa";
+String PASS = "Fuensanta29";
 
 String SERVER_IP = "192.168.1.104"; //poner direccion ip
 int SERVER_PORT = 8080; //poner puerto de escucha
@@ -32,13 +35,14 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
+
   Serial.print("Connected, IP address: ");
   Serial.print(WiFi.localIP());
 }
 
 void loop() {
   lecturaSensor(1); //pasarle el numero de pin que esta conectado el sensor al ESP
-  delay(5000);
+  delay(10000);
 }
 
 int getUmbral(int id){
