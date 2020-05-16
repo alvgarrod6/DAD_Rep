@@ -7,11 +7,8 @@
 char responseBuffer[300];
 WiFiClient client;
 
-//String SSID = "Dunar"; //nombre de la red a la que el ESP se conectara
-//String PASS = "d7?a35D9EnaPepXY?c!4"; //contraseña de acceso
-
-String SSID = "Artemisa";
-String PASS = "Fuensanta29";
+String SSID = "Dunar"; //nombre de la red a la que el ESP se conectara
+String PASS = "d7?a35D9EnaPepXY?c!4"; //contraseña de acceso
 
 String SERVER_IP = "192.168.1.104"; //poner direccion ip
 int SERVER_PORT = 8080; //poner puerto de escucha
