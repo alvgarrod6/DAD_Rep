@@ -5,20 +5,20 @@ public class Usuario {
 	private int id;
 	private String user;
 	private String pass;
-	private String name;
-	private String surname;
+	private String nombre;
+	private String apellidos;
 	private String dni;
-	private long birthdate;
+	private long nacimiento;
 	
-	public Usuario(int id, String user, String pass, String name, String surname, String dni, long birthdate) {
+	public Usuario(int id, String user, String pass, String nombre, String apellidos, String dni, long nacimiento) {
 		super();
 		this.id = id;
 		this.user = user;
 		this.pass = pass;
-		this.name = name;
-		this.surname = surname;
+		this.nombre = nombre;
+		this.apellidos = apellidos;
 		this.dni = dni;
-		this.birthdate = birthdate;
+		this.nacimiento = nacimiento;
 	}
 	public Usuario() {
 		super();
@@ -41,17 +41,17 @@ public class Usuario {
 	public void setPass(String pass) {
 		this.pass = pass;
 	}
-	public String getName() {
-		return name;
+	public String getNombre() {
+		return nombre;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
-	public String getSurname() {
-		return surname;
+	public String getApellidos() {
+		return apellidos;
 	}
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
 	}
 	public String getDni() {
 		return dni;
@@ -59,21 +59,21 @@ public class Usuario {
 	public void setDni(String dni) {
 		this.dni = dni;
 	}
-	public long getBirthdate() {
-		return birthdate;
+	public long getNacimiento() {
+		return nacimiento;
 	}
-	public void setBirthdate(long birthdate) {
-		this.birthdate = birthdate;
+	public void setNacimiento(long nacimiento) {
+		this.nacimiento = nacimiento;
 	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
+		result = prime * result + ((apellidos == null) ? 0 : apellidos.hashCode());
 		result = prime * result + ((dni == null) ? 0 : dni.hashCode());
 		result = prime * result + id;
-		result = prime * result + (int) (birthdate ^ (birthdate >>> 32));
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + (int) (nacimiento ^ (nacimiento >>> 32));
+		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + ((pass == null) ? 0 : pass.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
@@ -87,10 +87,10 @@ public class Usuario {
 		if (getClass() != obj.getClass())
 			return false;
 		Usuario other = (Usuario) obj;
-		if (surname == null) {
-			if (other.surname != null)
+		if (apellidos == null) {
+			if (other.apellidos != null)
 				return false;
-		} else if (!surname.equals(other.surname))
+		} else if (!apellidos.equals(other.apellidos))
 			return false;
 		if (dni == null) {
 			if (other.dni != null)
@@ -99,12 +99,12 @@ public class Usuario {
 			return false;
 		if (id != other.id)
 			return false;
-		if (birthdate != other.birthdate)
+		if (nacimiento != other.nacimiento)
 			return false;
-		if (name == null) {
-			if (other.name != null)
+		if (nombre == null) {
+			if (other.nombre != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!nombre.equals(other.nombre))
 			return false;
 		if (pass == null) {
 			if (other.pass != null)
@@ -117,11 +117,6 @@ public class Usuario {
 		} else if (!user.equals(other.user))
 			return false;
 		return true;
-	}
-	@Override
-	public String toString() {
-		return "Usuario [id=" + id + ", user=" + user + ", pass=" + pass + ", name=" + name + ", surname="
-				+ surname + ", dni=" + dni + ", birthdate=" + birthdate + "]";
 	}
 	
 	

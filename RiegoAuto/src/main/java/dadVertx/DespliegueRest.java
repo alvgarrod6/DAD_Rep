@@ -8,7 +8,8 @@ public class DespliegueRest extends AbstractVerticle{
 	@Override
 	public void start(Promise<Void> startPromise) {	
 		
-		vertx.deployVerticle(DatabaseVerticle.class.getName());
+		vertx.deployVerticle(DatabaseVerticle.class.getName());	
+		
 	}
 	
 }
