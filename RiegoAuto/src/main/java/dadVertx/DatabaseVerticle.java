@@ -49,18 +49,45 @@ public class DatabaseVerticle extends AbstractVerticle{
 		router.get("/api/device/:idusuario").handler(this::getDispositivo);		
 		router.post("/api/device").handler(this::putDevice);
 		router.delete("/api/device/:iddispositivo").handler(this::deleteDevice);
+			
+		router.post("/api/device/sensor").handler(this::putSensor);
+		router.get("/api/device/sensor/:idsensor").handler(this::getSensor);
+		router.put("/api/device/sensor/:idsensor").handler(this::updateSensor);
+		router.delete("/api/device/sensor/:idsensor").handler(this::deleteSensor);
+		router.get("/api/device/sensor/id/:idsensor").handler(this::getSensorId);
 		
-		router.post("/api/sensor").handler(this::putSensor);
-		router.get("/api/sensor/:idsensor").handler(this::getSensor);
-		router.put("/api/sensor/:idsensor").handler(this::updateSensor);
-		router.delete("/api/sensor/:idsensor").handler(this::deleteSensor);
+		router.get("/api/device/sensor/values/:idSensor").handler(this::getValueBySensor);
+		router.post("/api/device/sensor/values").handler(this::putValueForSensor);
 		
-		router.get("/api/sensor/values/:idSensor").handler(this::getValueBySensor);
-		router.post("/api/sensor/values").handler(this::putValueForSensor);
+		router.get("/api/device/sensor/riego/:idsensor").handler(this::getRiego);
+		router.post("/api/device/sensor/riego").handler(this::putRiego);		
 		
-		router.get("/api/sensor/riego/:idsensor").handler(this::getRiego);
-		router.post("/api/sensor/riego").handler(this::putRiego);		
-		
+	}
+	
+	private void getSensorId(RoutingContext routingContext) {
+		mySQLPool.preparedQuery("SELECT * FROM riegoauto.sensor WHERE idsensor = ?", 
+				Tuple.of(routingContext.request().getParam("idsensor")), 
+				res -> {
+					if(res.succeeded()) {
+						RowSet<Row> resultSet = res.result();
+						System.out.println("El número de elementos obtenidos es: "+resultSet.size());
+						JsonArray result = new JsonArray();
+						for(Row row : resultSet) {
+							result.add(JsonObject.mapFrom(new Sensor(row.getInteger("idsensor"),
+									row.getInteger("iddisp"),
+									row.getString("planta"),
+									row.getInteger("umbral"),
+									row.getInteger("potencia"),
+									row.getLong("initialTimestamp"))));
+						}
+
+						routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+						.end(result.encodePrettily());
+						}else {
+						routingContext.response().setStatusCode(401).putHeader("content-type", "application/json")
+						.end((JsonObject.mapFrom(res.cause()).encodePrettily()));
+					}
+				});		
 	}
 	
 	private void getRiego(RoutingContext routingContext) {
